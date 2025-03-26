@@ -82,22 +82,28 @@ namespace Dependencies
 			// https://www.red-gate.com/simple-talk/blogs/wpf-menu-displays-to-the-left-of-the-window/
 			SetDropDownMenuToBeRightAligned();
 
-            mainWindow = new MainWindow();
-            mainWindow.IsMaster = true;
+            mainWindow = new MainWindow
+            {
+                IsMaster = true
+            };
 
-            switch(Phlib.GetClrPhArch())
+            var suffix = "";
+            switch (Phlib.GetClrPhArch())
             {
                 case CLRPH_ARCH.x86:
-                    mainWindow.Title = "Dependencies (x86)";
+                    suffix = "x86";
                     break;
                 case CLRPH_ARCH.x64:
-                    mainWindow.Title = "Dependencies (x64)";
+                    suffix = "x64";
                     break;
                 case CLRPH_ARCH.WOW64:
-                    mainWindow.Title = "Dependencies (WoW64)";
+                    suffix = "WoW64";
                     break;
             }
-            
+
+            mainWindow.Title = mainWindow.Title + $" ({suffix})";
+
+
             mainWindow.Show();
 
 

@@ -10,7 +10,7 @@
         xmlns:properties="clr-namespace:Dependencies.Properties"
         mc:Ignorable="d"
         
-        Title="Dependencies" 
+        Title="DependencyExplorer" 
         Icon="Images/Dependencies_32px-no-blur.png"
         HorizontalContentAlignment="Stretch" 
         VerticalContentAlignment="Bottom"
