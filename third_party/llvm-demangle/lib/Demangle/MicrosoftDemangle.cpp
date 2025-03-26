@@ -453,7 +453,7 @@ Demangler::demangleLocalStaticGuard(StringView &MangledName) {
   }
 
   if (!MangledName.empty())
-    LSGI->ScopeIndex = demangleUnsigned(MangledName);
+    LSGI->ScopeIndex = static_cast<uint32_t>(demangleUnsigned(MangledName));
   return LSGVN;
 }
 
@@ -507,10 +507,10 @@ Demangler::demangleRttiBaseClassDescriptorNode(ArenaAllocator &Arena,
                                                StringView &MangledName) {
   RttiBaseClassDescriptorNode *RBCDN =
       Arena.alloc<RttiBaseClassDescriptorNode>();
-  RBCDN->NVOffset = demangleUnsigned(MangledName);
-  RBCDN->VBPtrOffset = demangleSigned(MangledName);
-  RBCDN->VBTableOffset = demangleUnsigned(MangledName);
-  RBCDN->Flags = demangleUnsigned(MangledName);
+  RBCDN->NVOffset = static_cast<uint32_t>(demangleUnsigned(MangledName));
+  RBCDN->VBPtrOffset = static_cast<uint32_t>(demangleSigned(MangledName));
+  RBCDN->VBTableOffset = static_cast<uint32_t>(demangleUnsigned(MangledName));
+  RBCDN->Flags = static_cast<uint32_t>(demangleUnsigned(MangledName));
   if (Error)
     return nullptr;
 
@@ -1382,7 +1382,7 @@ Demangler::demangleStringLiteral(StringView &MangledName) {
       Result->IsTruncated = true;
 
     unsigned CharBytes =
-        guessCharByteSize(StringBytes, BytesDecoded, StringByteSize);
+        guessCharByteSize(StringBytes, BytesDecoded, static_cast<unsigned int>(StringByteSize));
     assert(StringByteSize % CharBytes == 0);
     switch (CharBytes) {
     case 1:
@@ -1865,15 +1865,15 @@ Demangler::demangleFunctionEncoding(StringView &MangledName) {
   ThunkSignatureNode *TTN = nullptr;
   if (FC & FC_StaticThisAdjust) {
     TTN = Arena.alloc<ThunkSignatureNode>();
-    TTN->ThisAdjust.StaticOffset = demangleSigned(MangledName);
+    TTN->ThisAdjust.StaticOffset = static_cast<uint32_t>(demangleSigned(MangledName));
   } else if (FC & FC_VirtualThisAdjust) {
     TTN = Arena.alloc<ThunkSignatureNode>();
     if (FC & FC_VirtualThisAdjustEx) {
-      TTN->ThisAdjust.VBPtrOffset = demangleSigned(MangledName);
-      TTN->ThisAdjust.VBOffsetOffset = demangleSigned(MangledName);
+      TTN->ThisAdjust.VBPtrOffset = static_cast<uint32_t>(demangleSigned(MangledName));
+      TTN->ThisAdjust.VBOffsetOffset = static_cast<uint32_t>(demangleSigned(MangledName));
     }
-    TTN->ThisAdjust.VtordispOffset = demangleSigned(MangledName);
-    TTN->ThisAdjust.StaticOffset = demangleSigned(MangledName);
+    TTN->ThisAdjust.VtordispOffset = static_cast<uint32_t>(demangleSigned(MangledName));
+    TTN->ThisAdjust.StaticOffset = static_cast<uint32_t>(demangleSigned(MangledName));
   }
 
   if (FC & FC_NoParameterList) {

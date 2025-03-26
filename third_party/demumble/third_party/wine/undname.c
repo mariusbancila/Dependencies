@@ -231,7 +231,7 @@ static BOOL str_array_push(struct parsed_symbol* sym, const char* ptr, int len,
         a->alloc *= 2;
         a->elts = new;
     }
-    if (len == -1) len = strlen(ptr);
+    if (len == -1) len = (int)strlen(ptr);
     a->elts[a->num] = und_alloc(sym, len + 1);
     assert(a->elts[a->num]);
     memcpy(a->elts[a->num], ptr, len);
@@ -241,11 +241,11 @@ static BOOL str_array_push(struct parsed_symbol* sym, const char* ptr, int len,
         int i;
         char c;
 
-        for (i = a->max - 1; i >= 0; i--)
+        for (i = (int)a->max - 1; i >= 0; i--)
         {
             c = '>';
-            if (i < a->start) c = '-';
-            else if (i >= a->num) c = '}';
+            if (i < (int)a->start) c = '-';
+            else if (i >= (int)a->num) c = '}';
             TRACE("%p\t%d%c %s\n", a, i, c, a->elts[i]);
         }
     }
@@ -292,7 +292,7 @@ static char* str_printf(struct parsed_symbol* sym, const char* format, ...)
         {
             switch (format[++i])
             {
-            case 's': t = va_arg(args, char*); if (t) len += strlen(t); break;
+            case 's': t = va_arg(args, char*); if (t) len += (unsigned int)strlen(t); break;
             case 'c': (void)va_arg(args, int); len++; break;
             default: i--; /* fall through */
             case '%': len++; break;
@@ -313,7 +313,7 @@ static char* str_printf(struct parsed_symbol* sym, const char* format, ...)
                 t = va_arg(args, char*);
                 if (t)
                 {
-                    sz = strlen(t);
+                    sz = (unsigned int)strlen(t);
                     memcpy(p, t, sz);
                     p += sz;
                 }
@@ -569,7 +569,7 @@ static char* get_literal_string(struct parsed_symbol* sym)
         }
     } while (*++sym->current != '@');
     sym->current++;
-    if (!str_array_push(sym, ptr, sym->current - 1 - ptr, &sym->names))
+    if (!str_array_push(sym, ptr, (int)(sym->current - 1 - ptr), &sym->names))
         return NULL;
 
     return str_array_get_ref(&sym->names, sym->names.num - sym->names.start - 1);
@@ -687,15 +687,15 @@ static char* get_class_string(struct parsed_symbol* sym, int start)
     char*        ret;
     struct array *a = &sym->stack;
 
-    for (len = 0, i = start; i < a->num; i++)
+    for (len = 0, i = start; i < (int)a->num; i++)
     {
         assert(a->elts[i]);
-        len += 2 + strlen(a->elts[i]);
+        len += 2 + (unsigned int)strlen(a->elts[i]);
     }
     if (!(ret = und_alloc(sym, len - 1))) return NULL;
     for (len = 0, i = a->num - 1; i >= start; i--)
     {
-        sz = strlen(a->elts[i]);
+        sz = (unsigned int)strlen(a->elts[i]);
         memcpy(ret + len, a->elts[i], sz);
         len += sz;
         if (i > start)
