@@ -11,6 +11,7 @@ using Microsoft.Win32;
 
 using Mono.Cecil;
 using Dependencies.ClrPh;
+using Dependencies.Converters;
 
 namespace Dependencies
 {
@@ -37,126 +38,6 @@ namespace Dependencies
 
         // module flag attributes
         public ModuleFlag Flags;
-    }
-
-
-    /// <summary>
-    /// Dependency tree building behaviour.
-    /// A full recursive dependency tree can be memory intensive, therefore the
-    /// choice is left to the user to override the default behaviour.
-    /// </summary>
-    public class TreeBuildingBehaviour : IValueConverter
-    { 
-        public enum DependencyTreeBehaviour
-        {
-            ChildOnly,
-            RecursiveOnlyOnDirectImports,
-            Recursive,
-
-        }
-
-        public static DependencyTreeBehaviour GetGlobalBehaviour()
-        {
-            return (DependencyTreeBehaviour) (new TreeBuildingBehaviour()).Convert(
-                Dependencies.Properties.Settings.Default.TreeBuildBehaviour,
-                null,// targetType
-                null,// parameter
-                null // System.Globalization.CultureInfo
-            );
-        }
-
-        #region TreeBuildingBehaviour.IValueConverter_contract
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            string StrBehaviour = (string)value;
-
-            switch (StrBehaviour)
-            {
-                default:
-                case "ChildOnly":
-                    return DependencyTreeBehaviour.ChildOnly;
-                case "RecursiveOnlyOnDirectImports":
-                    return DependencyTreeBehaviour.RecursiveOnlyOnDirectImports;
-                case "Recursive":
-                    return DependencyTreeBehaviour.Recursive;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            DependencyTreeBehaviour Behaviour = (DependencyTreeBehaviour) value;
-
-            switch (Behaviour)
-            {
-                default:
-                case DependencyTreeBehaviour.ChildOnly:
-                    return "ChildOnly";
-                case DependencyTreeBehaviour.RecursiveOnlyOnDirectImports:
-                    return "RecursiveOnlyOnDirectImports";
-                case DependencyTreeBehaviour.Recursive:
-                    return "Recursive";
-            }
-        }
-        #endregion TreeBuildingBehaviour.IValueConverter_contract
-    }
-
-    /// <summary>
-    /// Dependency tree building behaviour.
-    /// A full recursive dependency tree can be memory intensive, therefore the
-    /// choice is left to the user to override the default behaviour.
-    /// </summary>
-    public class BinaryCacheOption : IValueConverter
-    {
-        [TypeConverter(typeof(EnumToStringUsingDescription))]
-        public enum BinaryCacheOptionValue
-        {
-            [Description("No (faster, but locks dll until Dependencies is closed)")]
-            No = 0,
-
-            [Description("Yes (prevents file locking issues)")]
-            Yes = 1
-        }
-
-        public static BinaryCacheOptionValue GetGlobalBehaviour()
-        {
-            return (BinaryCacheOptionValue)(new BinaryCacheOption()).Convert(
-                Dependencies.Properties.Settings.Default.BinaryCacheOptionValue,
-                null,// targetType
-                null,// parameter
-                null // System.Globalization.CultureInfo
-            );
-        }
-
-        #region BinaryCacheOption.IValueConverter_contract
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            bool StrOption = (bool)value;
-
-            switch (StrOption)
-            {
-                default:
-                case true:
-                    return BinaryCacheOptionValue.Yes;
-                case false:
-                    return BinaryCacheOptionValue.No;
-            }
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            BinaryCacheOptionValue Behaviour = (BinaryCacheOptionValue)(int)value;
-
-            switch (Behaviour)
-            {
-                default:
-                case BinaryCacheOptionValue.Yes:
-                    return true;
-                case BinaryCacheOptionValue.No:
-                    return false;
-            }
-        }
-        #endregion BinaryCacheOption.IValueConverter_contract
     }
 
     public class EnumToStringUsingDescription : TypeConverter
@@ -286,6 +167,14 @@ namespace Dependencies
 				return _Parent;
 			}
 		}
+
+        public MachineType? Machine
+        {
+            get
+            {
+                return ModuleInfo.Machine;
+            }
+        }
 
 
 		public ModuleFlag Flags
@@ -989,7 +878,7 @@ namespace Dependencies
 
             bw.RunWorkerCompleted += (sender, e) =>
             {
-                TreeBuildingBehaviour.DependencyTreeBehaviour SettingTreeBehaviour = Dependencies.TreeBuildingBehaviour.GetGlobalBehaviour();
+                TreeBuildingBehaviour.DependencyTreeBehaviour SettingTreeBehaviour = TreeBuildingBehaviour.GetGlobalBehaviour();
                 List<ModuleTreeViewItem> PeWithDummyEntries = new List<ModuleTreeViewItem>();
                 List<BacklogImport> PEProcessingBacklog = new List<BacklogImport>();
 

@@ -31,6 +31,15 @@ public enum ModuleFlag
 
 namespace Dependencies
 {
+    public enum MachineType
+    {
+        Unknown,
+        i386,
+        AMD64,
+        IA64,
+        ARM64,
+        ARMNT
+    }
 
     public struct ModuleInfo
     {
@@ -89,6 +98,7 @@ namespace Dependencies
         public override List<PeImportDll> Imports { get { return new List<PeImportDll>(); } }
         public override List<PeExport> Exports { get { return new List<PeExport>(); } }
 
+        public override MachineType? Machine { get { return null; } }
         public override string Cpu { get { return null; } }
         public override string Type { get { return null; } }
         public override UInt64? Filesize { get { return null; } }
@@ -125,7 +135,7 @@ namespace Dependencies
         public override List<PeImportDll> Imports { get { return UnderlyingModule.Imports; } }
         public override List<PeExport> Exports { get { return UnderlyingModule.Exports; } }
 
-
+        public override MachineType? Machine { get { return UnderlyingModule.Machine; } }
         public override string Cpu { get { return UnderlyingModule.Cpu; } }
         public override string Type { get { return UnderlyingModule.Type; } }
         public override UInt64? Filesize { get { return UnderlyingModule.Filesize; } }
@@ -254,6 +264,33 @@ namespace Dependencies
             return _Name;
         }
 
+        public virtual MachineType? Machine
+        {
+            get
+            {
+                int machine_id = _Info.Machine & 0xffff;
+                switch (machine_id)
+                {
+                    case 0x014c: /*IMAGE_FILE_MACHINE_I386*/
+                        return MachineType.i386;
+
+                    case 0x8664: /*IMAGE_FILE_MACHINE_AMD64*/
+                        return MachineType.AMD64;
+
+                    case 0x0200:/*IMAGE_FILE_MACHINE_IA64*/
+                        return MachineType.IA64;
+
+                    case 0x01c4:/*IMAGE_FILE_MACHINE_ARMNT*/
+                        return MachineType.ARMNT;
+
+                    case 0xAA64:/*IMAGE_FILE_MACHINE_ARM64*/
+                        return MachineType.ARM64;
+
+                    default:
+                        return MachineType.Unknown;
+                }
+            }
+        }
     
         public virtual string Cpu
         {

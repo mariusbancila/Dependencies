@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Globalization;
 using System.Windows.Markup;
+using System.Collections.ObjectModel;
+using Dependencies.Converters;
 
 namespace Dependencies
 {
@@ -173,11 +175,22 @@ namespace Dependencies
         }
     }
 
+    internal enum UIStyledElements
+    {
+        ModulesTree,
+        ModulesList,
+        ImportsList,
+        ExportsList
+    }
+
     public partial class UserSettings : Window
     {
         private string PeviewerPath;
         private ICollection<FontFamily> _familyCollection;          // see FamilyCollection property
-        private FontFamily SelectedFontFamily;
+        private ObservableCollection<double> _fontSizes = new ObservableCollection<double>()
+        {
+            8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72
+        };
 
         public UserSettings()
         {
@@ -185,19 +198,17 @@ namespace Dependencies
 
             TreeBuildCombo.ItemsSource = Enum.GetValues(typeof(TreeBuildingBehaviour.DependencyTreeBehaviour));
             BinaryCacheCombo.ItemsSource = Enum.GetValues(typeof(BinaryCacheOption.BinaryCacheOptionValue));
-            PeviewerPath = Dependencies.Properties.Settings.Default.PeViewerPath;
+            PeviewerPath = Properties.Settings.Default.PeViewerPath;
 
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             base.OnInitialized(e);
+            InitializeTargetElements();
             InitializeFontFamilyList();
-
-            SelectedFontFamily = new FontFamily(Dependencies.Properties.Settings.Default.Font);
-            SelectListItem(FontFamilyList, FontFamilyListItem.GetDisplayName(SelectedFontFamily));
-            FontFamilyList.SelectionChanged += new SelectionChangedEventHandler(fontFamilyList_SelectionChanged);
-            
+            InitializeFontSizeCombo();
+            DisplaySettingsForElement((UIStyledElements)Properties.Settings.Default.FontsSelectionIndex);
         }
 
         private void OnCancel(object sender, RoutedEventArgs e)
@@ -208,34 +219,33 @@ namespace Dependencies
         private void OnValidate(object sender, RoutedEventArgs e)
         {
             // Update defaults
-            Dependencies.Properties.Settings.Default.PeViewerPath = PeviewerPath;
+            Properties.Settings.Default.PeViewerPath = PeviewerPath;
 
-			int TreeDepth = Dependencies.Properties.Settings.Default.TreeDepth;
+			int TreeDepth = Properties.Settings.Default.TreeDepth;
 			if (Int32.TryParse(TreeDepthValue.Text, out TreeDepth))
 			{
-				Dependencies.Properties.Settings.Default.TreeDepth = TreeDepth;
+				Properties.Settings.Default.TreeDepth = TreeDepth;
 			}
 			
 
 			if (TreeBuildCombo.SelectedItem != null)
             {
-                Dependencies.Properties.Settings.Default.TreeBuildBehaviour = TreeBuildCombo.SelectedItem.ToString();
+                Properties.Settings.Default.TreeBuildBehaviour = TreeBuildCombo.SelectedItem.ToString();
             }
 
             if (BinaryCacheCombo.SelectedItem != null)
             {
                 bool newValue = (bool) (new BinaryCacheOption()).ConvertBack(BinaryCacheCombo.SelectedItem, null, null, null);
 
-                if (Dependencies.Properties.Settings.Default.BinaryCacheOptionValue != newValue)
+                if (Properties.Settings.Default.BinaryCacheOptionValue != newValue)
                 {
                     System.Windows.MessageBox.Show("The binary caching preference has been modified, you need to restart Dependencies for the modifications to be actually reloaded.");
                 }
 
-                Dependencies.Properties.Settings.Default.BinaryCacheOptionValue = newValue;
+                Properties.Settings.Default.BinaryCacheOptionValue = newValue;
             }
 
 
-            Dependencies.Properties.Settings.Default.Font = FontFamilyListItem.GetDisplayName(SelectedFontFamily);
             this.Close();
         }
 
@@ -283,6 +293,36 @@ namespace Dependencies
             return false;
         }
 
+        private bool SelectFontSizeComboItem(double value)
+        {
+            ItemCollection itemList = FontSizeCombo.Items;
+
+            foreach(var item in itemList)
+            {
+                if (item.Equals(value))
+                {
+                    FontSizeCombo.SelectedItem = item;
+                    return true;
+                }
+            }
+
+            if(FontSizeCombo.IsEditable)
+            {
+                // insert the value in the _fontSizes collection in sorted order
+                int i = 0;
+                while (i < _fontSizes.Count && _fontSizes[i] < value)
+                {
+                    i++;
+                }
+                _fontSizes.Insert(i, value);
+
+                FontSizeCombo.SelectedItem = value;
+                return true;
+            }
+
+            return false;
+        }
+
         public ICollection<FontFamily> FontFamilyCollection
         {
             get
@@ -299,13 +339,18 @@ namespace Dependencies
             }
         }
 
-        private void fontFamilyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void InitializeTargetElements()
         {
-            FontFamilyListItem item = FontFamilyList.SelectedItem as FontFamilyListItem;
-            if (item != null)
+            var elements = new Dictionary<UIStyledElements, string>
             {
-                SelectedFontFamily = item.FontFamily;
-            }
+                { UIStyledElements.ModulesTree, "Modules tree" },
+                { UIStyledElements.ModulesList, "Modules list" },
+                { UIStyledElements.ImportsList, "Imports list" },
+                { UIStyledElements.ExportsList, "Exports list" }
+            };
+
+            TargetElementCombo.ItemsSource = elements;
+            TargetElementCombo.SelectedIndex = Properties.Settings.Default.FontsSelectionIndex;
         }
 
         private void InitializeFontFamilyList()
@@ -322,13 +367,28 @@ namespace Dependencies
                     items[i++] = new FontFamilyListItem(family);
                 }
 
-                Array.Sort<FontFamilyListItem>(items);
+                Array.Sort(items);
 
-                foreach (FontFamilyListItem item in items)
-                {
-                    FontFamilyList.Items.Add(item);
-                }
+                FontFamilyList.ItemsSource = items;
             }
+        }
+
+        private void InitializeFontSizeCombo()
+        {
+            FontSizeCombo.ItemsSource = _fontSizes;
+        }
+
+        private void DisplaySettingsForElement(UIStyledElements element)
+        {
+            var fontInfo = FontInfoFor(element);
+
+            FontBoldCheckbox.IsChecked = fontInfo.IsBold;
+
+            if (FontFamilyList.Items.Count > 0)
+                SelectListItem(FontFamilyList, FontFamilyListItem.GetDisplayName(fontInfo.FontFamily));
+
+            if(FontSizeCombo.Items.Count > 0)
+                SelectFontSizeComboItem(fontInfo.FontSize);
         }
 
         private void OnPeviewerPathSettingChange(object sender, RoutedEventArgs e)
@@ -362,6 +422,84 @@ namespace Dependencies
 			return reg.IsMatch(str);
 
 		}
-	}
 
+        private void TargetElementCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Properties.Settings.Default.FontsSelectionIndex = TargetElementCombo.SelectedIndex;
+            if(TargetElementCombo.SelectedItem is KeyValuePair<UIStyledElements, string> kvp)
+            {
+                DisplaySettingsForElement(kvp.Key);
+            }
+        }
+
+        private void FontSizeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Properties.Settings.Default.FontsSelectionIndex = TargetElementCombo.SelectedIndex;
+            if (TargetElementCombo.SelectedItem is KeyValuePair<UIStyledElements, string> kvp)
+            {
+                var fontInfo = FontInfoFor(kvp.Key);
+                if(fontInfo != null)
+                    fontInfo.FontSize = (double)FontSizeCombo.SelectedValue;
+            }
+        }
+
+        private void FontBoldCheckbox_Click(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.FontsSelectionIndex = TargetElementCombo.SelectedIndex;
+            if (TargetElementCombo.SelectedItem is KeyValuePair<UIStyledElements, string> kvp)
+            {
+                var fontInfo = FontInfoFor(kvp.Key);
+                if (fontInfo != null)
+                    fontInfo.IsBold = FontBoldCheckbox.IsChecked ?? false;
+            }
+        }
+        private void fontFamilyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FontFamilyListItem item = FontFamilyList.SelectedItem as FontFamilyListItem;
+            if (item != null)
+            {
+                Properties.Settings.Default.FontsSelectionIndex = TargetElementCombo.SelectedIndex;
+                if (TargetElementCombo.SelectedItem is KeyValuePair<UIStyledElements, string> kvp)
+                {
+                    var fontInfo = FontInfoFor(kvp.Key);
+                    if (fontInfo != null)
+                        fontInfo.Font = item.FontFamily.Source;
+                }
+            }
+        }
+
+        private void UseFontDefaults_Click(object sender, RoutedEventArgs e)
+        {
+            ResetToDefaults(Properties.Settings.Default.FontModulesTree);
+            ResetToDefaults(Properties.Settings.Default.FontModulesList);
+            ResetToDefaults(Properties.Settings.Default.FontImportsList);
+            ResetToDefaults(Properties.Settings.Default.FontExportsList);
+
+            DisplaySettingsForElement((UIStyledElements)Properties.Settings.Default.FontsSelectionIndex);
+        }
+
+        private void ResetToDefaults(FontInfo info)
+        {
+            info.Font = "Consolas";
+            info.FontSize = 12;
+            info.IsBold = false;
+        }
+
+        private FontInfo FontInfoFor(UIStyledElements element)
+        {
+            switch(element)
+            {
+                case UIStyledElements.ModulesTree:
+                    return Properties.Settings.Default.FontModulesTree;
+                case UIStyledElements.ModulesList:
+                    return Properties.Settings.Default.FontModulesList;
+                case UIStyledElements.ImportsList:
+                    return Properties.Settings.Default.FontImportsList;
+                case UIStyledElements.ExportsList:
+                    return Properties.Settings.Default.FontExportsList;
+                default:
+                    return null;
+            }
+        }
+    }
 }

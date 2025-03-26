@@ -95,21 +95,15 @@ namespace Dependencies
 		private SearchFolder SearchFolder;
 
         private bool _Master;
-		private bool _EnableSearchFolderCustomization;
 
 
         #region PublicAPI
         public MainWindow()
         {
-
             InitializeComponent();
 
             _recentsItems = new ObservableCollection<RecentMenuItem>();
             PopulateRecentFilesMenuItems();
-
-            this.AboutPage = new About();
-            this.UserSettings = new UserSettings();
-			this.SearchFolder = null;
 
 			// TODO : understand how to reliably bind in xaml
 			this.TabControl.InterTabController.InterTabClient = DoNothingInterTabClient;
@@ -279,17 +273,24 @@ namespace Dependencies
 
         private void OpenAboutCommandBinding_Executed(object sender, RoutedEventArgs e)
         {
-            this.AboutPage.Close();
-            this.AboutPage = new About();
-            this.AboutPage.Show();
+            this.AboutPage?.Close();
+            this.AboutPage = new About()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            this.AboutPage.ShowDialog();
         }
 
         private void OpenUserSettingsCommandBinding_Executed(object sender, RoutedEventArgs e)
         {
-            this.UserSettings.Close();
-            this.UserSettings = new UserSettings();
-            this.UserSettings.Owner = this;
-            this.UserSettings.Show();
+            this.UserSettings?.Close();
+            this.UserSettings = new UserSettings()
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            this.UserSettings.ShowDialog();
         }
 
 		private void OpenCustomizeSearchFolderCommand_Executed(object sender, RoutedEventArgs e)
@@ -298,13 +299,13 @@ namespace Dependencies
 			if (SelectedItem == null)
 				return;
 
-			if (this.SearchFolder != null)
-			{
-				this.SearchFolder.Close();
-			}
-			
-			this.SearchFolder = new SearchFolder(SelectedItem);
-			this.SearchFolder.Show();
+			this.SearchFolder?.Close();
+            this.SearchFolder = new SearchFolder(SelectedItem)
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            this.SearchFolder.ShowDialog();
 		}
 
 
@@ -325,15 +326,9 @@ namespace Dependencies
         /// </summary>
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            this.UserSettings.Close();
-            this.AboutPage.Close();
-
-			if (this.SearchFolder!= null)
-			{
-				this.SearchFolder.Close();
-			}
-			
-
+            UserSettings?.Close();
+            AboutPage?.Close();
+			SearchFolder?.Close();
 
 			base.OnClosing(e);
         }
@@ -362,26 +357,5 @@ namespace Dependencies
         #endregion EventsHandler
     }
 
-    /// <summary>
-    /// Converter to transform a boolean into a Visibility settings. 
-    /// Why is this not part of the WPF standard lib ? Everybody ends up coding one in every project.
-    /// </summary>
-    public class BooleanToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            Boolean SettingValue = (Boolean) value;
-
-            if (SettingValue)
-                return Visibility.Visible;
-
-            return Visibility.Collapsed;
-
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
+    
 }

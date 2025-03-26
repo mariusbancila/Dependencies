@@ -76,7 +76,7 @@ namespace Dependencies
             Phlib.InitializePhLib();
 
 			// Load singleton for binary caching
-			BinaryCache.InitializeBinaryCache(Dependencies.BinaryCacheOption.GetGlobalBehaviour() == Dependencies.BinaryCacheOption.BinaryCacheOptionValue.Yes);
+			BinaryCache.InitializeBinaryCache(Dependencies.Converters.BinaryCacheOption.GetGlobalBehaviour() == Dependencies.Converters.BinaryCacheOption.BinaryCacheOptionValue.Yes);
 
 
 			// https://www.red-gate.com/simple-talk/blogs/wpf-menu-displays-to-the-left-of-the-window/

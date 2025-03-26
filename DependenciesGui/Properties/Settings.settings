@@ -8,6 +8,9 @@
     <Setting Name="ShowStatusBar" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ShowArchitecture" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="FullPath" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -43,6 +46,45 @@
     </Setting>
     <Setting Name="BinaryCacheOptionValue" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>    
+    <Setting Name="FontsSelectionIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="FontModulesTree" Type="Dependencies.FontInfoCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;FontInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+    &lt;Font&gt;Consolas&lt;/Font&gt;
+    &lt;FontSize&gt;12&lt;/FontSize&gt;
+    &lt;IsBold&gt;false&lt;/IsBold&gt;
+  &lt;/FontInfo&gt;
+</Value>
+    </Setting>
+    <Setting Name="FontModulesList" Type="Dependencies.FontInfoCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;FontInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+    &lt;Font&gt;Consolas&lt;/Font&gt;
+    &lt;FontSize&gt;12&lt;/FontSize&gt;
+    &lt;IsBold&gt;false&lt;/IsBold&gt;
+  &lt;/FontInfo&gt;
+</Value>
+    </Setting>
+    <Setting Name="FontImportsList" Type="Dependencies.FontInfoCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;FontInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+    &lt;Font&gt;Consolas&lt;/Font&gt;
+    &lt;FontSize&gt;12&lt;/FontSize&gt;
+    &lt;IsBold&gt;false&lt;/IsBold&gt;
+  &lt;/FontInfo&gt;
+</Value>
+    </Setting>
+    <Setting Name="FontExportsList" Type="Dependencies.FontInfoCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;FontInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+    &lt;Font&gt;Consolas&lt;/Font&gt;
+    &lt;FontSize&gt;12&lt;/FontSize&gt;
+    &lt;IsBold&gt;false&lt;/IsBold&gt;
+  &lt;/FontInfo&gt;
+</Value>
     </Setting>
   </Settings>
 </SettingsFile>

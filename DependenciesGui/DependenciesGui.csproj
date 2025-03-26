@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Dependencies</RootNamespace>
     <AssemblyName>DependenciesGui</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -126,6 +126,12 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BinaryCacheOption.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\ImageToHeaderConverter.cs" />
+    <Compile Include="Converters\MachineImageToHeaderConverter.cs" />
+    <Compile Include="Converters\OverlayImageToHeaderConverter.cs" />
+    <Compile Include="Converters\TreeBuildingBehaviour.cs" />
     <Compile Include="CustomHeaderViewModel.cs" />
     <Compile Include="DependencyCustomListView.xaml.cs">
       <DependentUpon>DependencyCustomListView.xaml</DependentUpon>
@@ -139,8 +145,11 @@
     <Compile Include="DependencyModuleList.xaml.cs">
       <DependentUpon>DependencyModuleList.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DragablzCustomHeader.cs" />
+    <Compile Include="DragablzCustomHeader.cs">
+      <DependentUpon>DragablzCustomHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FilterControl\FilterControl.cs" />
+    <Compile Include="Models\FontInfo.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="Helpers\SettingBindingHandler.cs" />
     <Compile Include="Models\ModuleInfo.cs" />
@@ -153,7 +162,7 @@
       <DependentUpon>SearchFolder.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Shell32IconExtractor.cs" />
+    <Compile Include="ShellIcon.cs" />
     <Compile Include="UserSettings.xaml.cs">
       <DependentUpon>UserSettings.xaml</DependentUpon>
     </Compile>
@@ -235,6 +244,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Dependencies.manifest" />
     <None Include="packages.config" />
@@ -309,6 +319,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\HourglassOverlay.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\machine_x86.png" />
+    <Resource Include="Images\machine_ia64.png" />
+    <Resource Include="Images\machine_x64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\error_childmodule.png" />
+    <Resource Include="Images\error_module.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\machine_arm64.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

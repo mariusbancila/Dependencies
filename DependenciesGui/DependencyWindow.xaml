@@ -4,15 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dependencies"
+        xmlns:converters="clr-namespace:Dependencies.Converters"
         xmlns:properties="clr-namespace:Dependencies.Properties"
         mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="600">
 
     <TabItem.Resources>
-        <local:ImageToHeaderConverter x:Key="img"/>
-        <local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
+        <converters:ImageToHeaderConverter x:Key="img"/>
+        <converters:OverlayImageToHeaderConverter x:Key="img_overlay"/>
+        <converters:MachineImageToHeaderConverter x:Key="machine_overlay"/>
         
         <!-- Hide/Show the status bar based on a global switch -->
-        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
 
         <Style x:Key="LeftAlignHeaderText" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left"></Setter>
@@ -95,72 +97,48 @@
                                 <DataTemplate>
                                     <Grid Margin="0,0,5,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="24"/>
+                                            <ColumnDefinition Width="32"/>
                                             <ColumnDefinition Width="3" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
 
                                         
                                         <!--System icon for the current module-->
-                                        <Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0" 
+                                        <Image Grid.Column="0" Width="16" Height="16" Margin="0,0,0,0"  HorizontalAlignment="Center"
                                                Source="{Binding Path=(local:ModuleTreeViewItem.ModuleFilePath), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img} }"
                                                ToolTip="{Binding Path=(local:ModuleTreeViewItem.Tooltip), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}}"
                                         ></Image>
+
+                                        <!--Overlay for machine-->
+                                        <Image Grid.Column="0" Width="16" Height="16" HorizontalAlignment="Right" Margin="0,2,0,2" 
+                                               Source="{Binding Path=(local:ModuleTreeViewItem.Machine), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource machine_overlay} }"
+                                               Visibility="{Binding Source={x:Static properties:Settings.Default}, Path=ShowArchitecture, Mode=OneWay, Converter={StaticResource BooleanToVisibility}}">
+                                        </Image>
                                         
                                         <!--Overlay for additional flags (delay import, apiset, etc.)-->
-                                        <Image Grid.Column="0" Width="16" Height="16" Margin="4,0,0,0" Source="{Binding Path=(local:ModuleTreeViewItem.Flags), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img_overlay} }"></Image>
+                                        <Image Grid.Column="0" Width="16" Height="16" HorizontalAlignment="Left" Margin="12,2,0,2" 
+                                               Source="{Binding Path=(local:ModuleTreeViewItem.Flags), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource img_overlay} }">
+                                        </Image>
 
-                                        <!--Another red rectangle overlay on modules issues-->
-                                        <Rectangle x:Name="ErrorModule"  Grid.Column="0" Width="14" Height="14" 
-                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
-                                                   >
-                                            <Rectangle.Fill>
-                                                <SolidColorBrush Color="Red" />
-                                            </Rectangle.Fill>
-                                            <Rectangle.OpacityMask>
-                                                <DrawingBrush AlignmentX="Left" AlignmentY="Top">
-                                                    <DrawingBrush.Drawing>
-                                                        <DrawingGroup>
-                                                            <GeometryDrawing Brush="#33000000">
-                                                                <GeometryDrawing.Geometry>
-                                                                    <RectangleGeometry Rect="0,0,40,40" />
-                                                                </GeometryDrawing.Geometry>
-                                                            </GeometryDrawing>
-                                                        </DrawingGroup>
-                                                    </DrawingBrush.Drawing>
-                                                </DrawingBrush>
-                                            </Rectangle.OpacityMask>
-                                        </Rectangle>
+                                        <!--Another red overlay indicator on modules issues-->
+                                        <Image Grid.Column="0" Width="16" Height="16" HorizontalAlignment="Left" Margin="0,2,0,2"
+                                               Source="/Images/error_module.png"
+                                               Visibility="{Binding Path=(local:ModuleTreeViewItem.HasErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}" />
 
-                                        <!--Another red rectangle overlay on modules issues-->
-                                        <Rectangle x:Name="ChildErrorModule"  Grid.Column="0" Width="14" Height="14" 
-                                                   Visibility="{Binding Path=(local:ModuleTreeViewItem.HasChildErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}"
-                                                   >
-                                            <Rectangle.Fill>
-                                                <SolidColorBrush Color="DarkOrange" />
-                                            </Rectangle.Fill>
-                                            <Rectangle.OpacityMask>
-                                                <DrawingBrush AlignmentX="Left" AlignmentY="Top">
-                                                    <DrawingBrush.Drawing>
-                                                        <DrawingGroup>
-                                                            <GeometryDrawing Brush="#88888888">
-                                                                <GeometryDrawing.Geometry>
-                                                                    <RectangleGeometry Rect="0,0,40,40" />
-                                                                </GeometryDrawing.Geometry>
-                                                            </GeometryDrawing>
-                                                        </DrawingGroup>
-                                                    </DrawingBrush.Drawing>
-                                                </DrawingBrush>
-                                            </Rectangle.OpacityMask>
-                                        </Rectangle>
+                                        <!--Another orange overlay indicator on child modules issues-->
+                                        <Image Grid.Column="0" Width="16" Height="16" HorizontalAlignment="Left" Margin="0,2,0,2"
+                                               Source="/Images/error_childmodule.png"
+                                               Visibility="{Binding Path=(local:ModuleTreeViewItem.HasChildErrors), RelativeSource={RelativeSource AncestorLevel=1,AncestorType=TreeViewItem,Mode=FindAncestor}, Converter={StaticResource BooleanToVisibility}}" />
 
-                                        <TextBlock Grid.Column="2" Text="{Binding}"></TextBlock>
+                                        <TextBlock Grid.Column="2" Text="{Binding}" VerticalAlignment="Center"></TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </Setter.Value>
                         </Setter>
-                        
-                        <Setter Property="FontFamily" Value="{Binding Source={x:Static properties:Settings.Default}, Path=Font, Mode=OneWay}" />
+
+                        <Setter Property="FontFamily" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FontModulesTree.FontFamily, Mode=OneWay}" />
+                        <Setter Property="FontSize" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FontModulesTree.FontSize, Mode=OneWay}" />
+                        <Setter Property="FontWeight" Value="{Binding Source={x:Static properties:Settings.Default}, Path=FontModulesTree.FontWeight, Mode=OneWay}" />
                         <Setter Property="ContextMenu" Value="{StaticResource TreeItemContextMenu}" />
                         
                     </Style>

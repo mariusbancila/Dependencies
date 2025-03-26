@@ -4,12 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:Dependencies"
+        xmlns:converters="clr-namespace:Dependencies.Converters"
         xmlns:properties="clr-namespace:Dependencies.Properties"
         xmlns:util="clr-namespace:Wpf.Util"
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300"
                                 
-        Style="{StaticResource DependencyCustomListViewStyle}"
+        Style="{StaticResource DependencyModuleListViewStyle}"
         SearchListFilter="ModuleName"
         CopyHandler="ModuleCopyHandler"
                                 
@@ -17,8 +18,8 @@
     >
 
     <local:DependencyCustomListView.Resources>
-        <local:ImageToHeaderConverter x:Key="img"/>
-        <local:OverlayImageToHeaderConverter x:Key="img_overlay"/>
+        <converters:ImageToHeaderConverter x:Key="img"/>
+        <converters:OverlayImageToHeaderConverter x:Key="img_overlay"/>
 
         <ContextMenu x:Key="ItemContextMenu">
 
@@ -91,7 +92,7 @@
             <GridViewColumn Header="Entry point" Width="100" DisplayMemberBinding="{Binding EntryPoint, TargetNullValue='N/A', StringFormat={}0x{0:x08}}" util:GridViewSort.PropertyName="EntryPoint" HeaderContainerStyle="{StaticResource LeftAlignHeader}"/>
             <GridViewColumn Header="Subsystem" Width="100" DisplayMemberBinding="{Binding Subsystem, TargetNullValue='N/A', StringFormat={}0x{0:x08}}" util:GridViewSort.PropertyName="Subsystem" HeaderContainerStyle="{StaticResource LeftAlignHeader}"/>
             <GridViewColumn Header="Subsystem Ver." Width="100" DisplayMemberBinding="{Binding SubsystemVersion, TargetNullValue='N/A'}" util:GridViewSort.PropertyName="SubsystemVersion" HeaderContainerStyle="{StaticResource LeftAlignHeader}"/>
-            <GridViewColumn Header="Checksum" Width="200" util:GridViewSort.PropertyName="Checksum" HeaderContainerStyle="{StaticResource LeftAlignHeader}">
+            <GridViewColumn Header="Checksum" Width="120" util:GridViewSort.PropertyName="Checksum" HeaderContainerStyle="{StaticResource LeftAlignHeader}">
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
                         <TextBlock  TextAlignment="Right">
@@ -100,11 +101,14 @@
                                     
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding CorrectChecksum , TargetNullValue='False'}" Value="False" >
-                                            <Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08} (incorrect), TargetNullValue='N/A' }"/>
+                                            <Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08}, TargetNullValue='N/A' }"/>
+                                            <Setter Property="Foreground" Value="Red" />
+                                            <Setter Property="ToolTip" Value="Checksum is incorrect"/>
                                         </DataTrigger>
 
                                         <DataTrigger Binding="{Binding CorrectChecksum}" Value="True" >
-                                            <Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08} (correct), TargetNullValue='N/A' }"/>
+                                            <Setter Property="Text" Value="{Binding Checksum, StringFormat={}0x{0:x08}, TargetNullValue='N/A' }"/>
+                                            <Setter Property="ToolTip" Value="Checksum is correct"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

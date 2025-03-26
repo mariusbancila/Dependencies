@@ -9,7 +9,7 @@
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="300"
 
-        Style="{StaticResource DependencyCustomListViewStyle}"
+        Style="{StaticResource DependencyImportListViewStyle}"
         SearchListFilter="FilterName"
         CopyHandler="ImportCopyHandler"
     >

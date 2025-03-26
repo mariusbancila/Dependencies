@@ -4,15 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Dependencies"
+        xmlns:converters="clr-namespace:Dependencies.Converters"
         xmlns:properties="clr-namespace:Dependencies.Properties"
         xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="UserSettings"
-        Height="400" Width="700"
+        Title="User settings"
+        Height="500" Width="700"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
-        <local:TreeBuildingBehaviour x:Key="TreeBuildingBehaviourConverter"/>
-        <local:BinaryCacheOption x:Key="BinaryCacheOptionConverter"/>
+        <converters:TreeBuildingBehaviour x:Key="TreeBuildingBehaviourConverter"/>
+        <converters:BinaryCacheOption x:Key="BinaryCacheOptionConverter"/>
     </Window.Resources>
     <Grid Margin="10 20 20 20" >
 
@@ -26,6 +27,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -33,7 +35,7 @@
         <Label Margin="5" 
                Grid.Row="0"
                Grid.Column="0"
-               Content="Use BinaryCache:" 
+               Content="Use BinaryCache" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Center" />
 
@@ -45,7 +47,7 @@
                   />
 
         <!-- Previewer Path selection -->
-        <Label Content="Peviewer path:"
+        <Label Content="Peviewer path"
                Margin="5"
                Grid.Column="0"
                Grid.Row="1"
@@ -76,7 +78,7 @@
         <Label Margin="5" 
                Grid.Row="2"
                Grid.Column="0"
-               Content="Tree build behaviour:" 
+               Content="Tree build behaviour" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Center" />
 
@@ -91,7 +93,7 @@
         <Label Margin="5" 
                Grid.Row="3"
                Grid.Column="0"
-               Content="Tree depth:" 
+               Content="Tree depth" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Center" />
 
@@ -103,24 +105,84 @@
                   Text="{Binding Source={x:Static properties:Settings.Default}, Path=TreeDepth, Mode=OneWay}"
                   TextWrapping="Wrap" 
                   VerticalContentAlignment="Center" />
-
-
-        <!-- Font family selection -->
+        
+        <!-- Imports tree font -->
         <Label Margin="5"
                Grid.Row="4"
                Grid.Column="0"
-               Content="Font family:" 
+               Content="Font settings for" 
                HorizontalAlignment="Left" 
                VerticalAlignment="Top" />
 
-        <ListBox Name="FontFamilyList"
-                 Margin="5"
-                 Grid.Row="4"
-                 Grid.Column="1" />
+        <Grid Grid.Row="4"
+              Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <ComboBox x:Name="TargetElementCombo"
+                      DisplayMemberPath="Value"
+                      Margin="5"
+                      Grid.Column="0"
+                      SelectionChanged="TargetElementCombo_SelectionChanged" />
+
+            <Button x:Name="UseFontDefaults"
+                    Content="Use defaults"
+                    Margin="5"
+                    Width="100"
+                    Grid.Column="1"
+                    Click="UseFontDefaults_Click" />
+        </Grid>
+
+
+        <!-- Font family selection -->
+
+        <Grid Grid.Row="5"
+              Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ListBox Name="FontFamilyList"
+                     Margin="5"
+                     Grid.Column="0"
+                     SelectionChanged="fontFamilyList_SelectionChanged" />
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ComboBox x:Name="FontSizeCombo" Margin="5" IsEditable="True" 
+                          SelectionChanged="FontSizeCombo_SelectionChanged" />
+                <CheckBox x:Name="FontBoldCheckbox" Grid.Row="1" Content="Bold" Margin="5" 
+                          Click="FontBoldCheckbox_Click" />
+                <Border Grid.Row="2" Margin="5" BorderThickness="1" BorderBrush="Gray" Width="100" Height="40" VerticalAlignment="Bottom" >
+                    <TextBlock x:Name="FontPreview" Padding="5" Text="Sample" TextAlignment="Center" VerticalAlignment="Center" 
+                               FontFamily="{Binding ElementName=FontFamilyList, Path=SelectedItem.FontFamily}"
+                               FontSize="{Binding ElementName=FontSizeCombo, Path=SelectedValue}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=FontBoldCheckbox, Path=IsChecked}" Value="True">
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Border>
+            </Grid>
+        </Grid>
+
+
         
         
         <!-- Buttons -->
-        <StackPanel Grid.Row="5" Grid.Column="1" 
+        <StackPanel Grid.Row="6" Grid.Column="1" 
                     Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Content="Cancel" 
                     Height="20"
