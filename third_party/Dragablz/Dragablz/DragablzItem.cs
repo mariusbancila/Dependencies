@@ -576,7 +576,7 @@ namespace Dragablz
         private static void ApplyCustomThumbSetting(Thumb thumb)
         {            
             var dragablzItem = thumb.VisualTreeAncestory().OfType<DragablzItem>().FirstOrDefault();
-            if (dragablzItem == null) throw new ApplicationException("Cannot find parent DragablzItem for custom thumb");
+            if (dragablzItem == null) return;// throw new ApplicationException("Cannot find parent DragablzItem for custom thumb");
 
             var enableCustomThumb = (bool)thumb.GetValue(IsCustomThumbProperty);
             dragablzItem._customThumb = enableCustomThumb ? thumb : null;
