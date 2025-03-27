@@ -1,22 +1,31 @@
-# Dependencies - An open-source modern Dependency Walker
-[![Build status](https://ci.appveyor.com/api/projects/status/wtr5v8ksndbkkqxg?svg=true)](https://ci.appveyor.com/project/lucasg/dependencies)
+# DependencyExplorer - An open-source modern Dependency Walker
 
-### [Download here](https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip)
+## Overview
+**DependencyExplorer** is a fork of the [**Dependencies**](https://github.com/lucasg/Dependencies) project by [**Lucas Georges**](https://x.com/_lucas_georges_).
+It is a rewrite of the legacy software [Dependency Walker](http://www.dependencywalker.com/) which was shipped along Windows SDKs, but whose development stopped around 2006.
 
-#### [(If you're running an AV, use this download instead)](https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release_.without.peview.exe.zip)
-
-NB : due to [limitations on /clr compilation](https://msdn.microsoft.com/en-us/library/ffkc918h.aspx), `Dependencies` needs [Visual C++  Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) installed to run properly.
+**DependencyExplorer** can help Windows developers troubleshooting their dll load dependencies issues.
 
 <p align="center">
 <img alt="Usage Exemple" src="screenshots/UsageExemple.gif"/>
 </p>
 
+### [Download here](https://github.com/mariusbancila/DependencyExplorer/releases/tag/v1.12)
 
-## Overview
-`Dependencies` is a rewrite of the legacy software [Dependency Walker](http://www.dependencywalker.com/) which was shipped along Windows SDKs, but whose development stopped around 2006.
-`Dependencies` can help Windows developers troubleshooting their dll load dependencies issues.
+NB : due to [limitations on /clr compilation](https://msdn.microsoft.com/en-us/library/ffkc918h.aspx), `DependencyExplorer` needs [Visual C++  Redistributable](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads) installed to run properly.
 
-## Releases
+## Releases (forked version)
+* [v1.12](https://github.com/mariusbancila/DependencyExplorer/releases/tag/v1.12)
+	* UI improvements:
+		* individual font settings (family, size, style) for modules tree, modules list, imports list, and exports list
+		* added overlays for architecture types (displays 86, 64 on the right side of the icon); optional, controlled with a user setting
+		* replaced error rectangle overlays with images (displays E for error on the left side of the icon)
+		* incorrect checksum displayed in red (and tooltip instead of explanatory text)
+		* new modules tree context menu commands: copy file path, open in explorer
+	* Bugfixes:
+		* prevent duplicates in most recent files
+
+## Releases (original version)
 * [v1.11](https://github.com/lucasg/Dependencies/releases/download/v1.11.1/Dependencies_x64_Release.zip) :
 	* lots of bugfixes and incremental improvements
 	* covid pandemic
@@ -46,10 +55,10 @@ NB : due to [limitations on /clr compilation](https://msdn.microsoft.com/en-us/l
 
 ## Installation and Usage
 
-`Dependencies` is currently shipped as two binaries (no installer present) : `Dependencies.exe` as a CLI tool and `DependenciesGui.exe` for its GUI counterpart (see screenshot). Just click on one of the release numbers above (preferably the latest), download and uncompress the archive and run `DependenciesGui.exe`.
-Since the binary is not signed, `SmartScreen` might scream at runtime. `Dependencies` also bundle `ClrPhTester.exe`, a dumpbin-like executable used to test for non-regressions.
+`DependencyExplorer` is currently shipped as two binaries (no installer present) : `Dependencies.exe` as a CLI tool and `DependenciesGui.exe` for its GUI counterpart (see screenshot). Just click on one of the release numbers above (preferably the latest), download and uncompress the archive and run `DependenciesGui.exe`.
+Since the binary is not signed, `SmartScreen` might scream at runtime. `DependencyExplorer` also bundle `ClrPhTester.exe`, a dumpbin-like executable used to test for non-regressions.
 
-`Dependencies` currently does not recursively resolve child imports when parsing a new PE since it can be really memory-hungry to do so ( it can over a GB even for "simple" PEs ). This behavior can be overridden (app-wide) via a property located in "Options->Properties->Tree build behaviour".
+`DependencyExplorer` currently does not recursively resolve child imports when parsing a new PE since it can be really memory-hungry to do so ( it can over a GB even for "simple" PEs ). This behavior can be overridden (app-wide) via a property located in "Options->Properties->Tree build behaviour".
 
 <p align="center">
 <img alt="User options" src="screenshots/UserOptions.png"/>
@@ -68,7 +77,7 @@ Tree build behaviours available :
 
 ## Limitations
 
-At the moment, `Dependencies` recreates features and "features" of `depends.exe`, which means :
+At the moment, `DependencyExplorer` recreates features and "features" of `depends.exe`, which means :
 
 * Only direct, forwarded and delay load dependencies are supported. Dynamic loading via `LoadLibrary` are not supported (and probably won't ever be).
 * Support of api set schema redirection since 1.5
@@ -78,8 +87,12 @@ At the moment, `Dependencies` recreates features and "features" of `depends.exe`
 
 ## Building
 
-Building is pretty straightforward.
-The only caveat is you need to select the "Debug" or "Release" configuration and "x64" or "x86" platform which may not be the default.
+Building is straightforward:
+
+* Clone the repo.
+* Open the `Dependencies.sln` solution in Visual Studio.
+* Select the configuration (`Debug` or `Release`) and the platform (`x86` or `x64`).
+* Build the solution.
 
 
 ## Credits and licensing
