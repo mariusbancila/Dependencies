@@ -175,19 +175,14 @@ namespace Dependencies
         /// </summary>
         public void PopulateRecentFilesMenuItems()
         {
-
-            //System.Windows.Controls.MenuItem FileMenuItem = (System.Windows.Controls.MenuItem)this.MainMenu.Items[0];
-            
-
-            if (Properties.Settings.Default.RecentFiles.Count == 0) {
+            if (Properties.Settings.Default.RecentFiles.Count == 0)
                 return;
-            }
 
-
+            RecentsItems.Clear();
             foreach (var RecentFilePath in Properties.Settings.Default.RecentFiles)
             {
                 // Ignore empty dummy entries
-                if (String.IsNullOrEmpty(RecentFilePath))
+                if (string.IsNullOrEmpty(RecentFilePath))
                 {
                     continue;
                 }
