@@ -528,5 +528,17 @@ namespace Dependencies
         private RelayCommand _OpenPeviewerCommand;
         private RelayCommand _OpenNewAppCommand;
         private RelayCommand _CopyValue;
+
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+                return false;
+
+            DisplayModuleInfo other = (DisplayModuleInfo)obj;
+            
+            return string.Equals(_Name, other._Name, StringComparison.OrdinalIgnoreCase) &&
+                   string.Equals(_Filepath, other._Filepath, StringComparison.OrdinalIgnoreCase);
+        }
     }
 }

@@ -94,7 +94,9 @@ namespace Dependencies
             // TODO : Find a way to properly bind commands instead of using this hack
             NewModule.DoFindModuleInTreeCommand = DoFindModuleInTreeCommand;
             NewModule.ConfigureSearchOrderCommand = ConfigureSearchOrderCommand;
-          
+
+            if (this.Items.Contains(NewModule))
+                return;
 
             this.Items.Add(NewModule);
         }
