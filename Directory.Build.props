@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <RepoRoot>$(MSBuildThisFileDirectory)</RepoRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company></Company>
+    <Authors></Authors>
+    <Owners></Owners>
+    <Product>DependencyExplorer</Product>
+    <Copyright>"© 2017 - $([System.DateTime]::Now.ToString("yyyy"))"</Copyright>
+    <Version>1.13.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Description)'==''">
+    <Description></Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>net48</TargetFrameworks>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Platforms>x86;x64</Platforms>
+  </PropertyGroup>
+</Project>

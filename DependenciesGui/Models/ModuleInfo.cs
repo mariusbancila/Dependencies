@@ -161,7 +161,7 @@ namespace Dependencies
         public DisplayModuleInfo(string ModuleName)
         {
 
-			_Name = ModuleName;
+            _Name = ModuleName;
             _Filepath = null;
             _Flags = 0;
 
@@ -172,11 +172,11 @@ namespace Dependencies
         {
 
 
-			_Name = ModuleName;
+            _Name = ModuleName;
             _Filepath = Pe.Filepath;
             _Flags = Flags;
-            
-            
+
+
             // Do not set this variables in order to 
             // lessen memory allocations
             _Imports = null;
@@ -216,13 +216,14 @@ namespace Dependencies
             get { return GetPathDisplayName(Dependencies.Properties.Settings.Default.FullPath); }
         }
 
-        public virtual string Filepath {
+        public virtual string Filepath
+        {
             get { return _Filepath; }
         }
 
         public virtual bool DelayLoad
         {
-            get { return (_Flags & ModuleFlag.DelayLoad) != 0;  }
+            get { return (_Flags & ModuleFlag.DelayLoad) != 0; }
         }
 
         public virtual ModuleFlag Flags
@@ -233,21 +234,25 @@ namespace Dependencies
 
         public virtual List<PeImportDll> Imports
         {
-            get { 
-            
-                if (_Imports == null) {
+            get
+            {
+
+                if (_Imports == null)
+                {
                     _Imports = (System.Windows.Application.Current as App).LoadBinary(Filepath).GetImports();
                 }
-            
-                return _Imports;  
+
+                return _Imports;
             }
         }
 
         public virtual List<PeExport> Exports
         {
-            get { 
-            
-                if (_Exports == null) {
+            get
+            {
+
+                if (_Exports == null)
+                {
                     _Exports = (System.Windows.Application.Current as App).LoadBinary(Filepath).GetExports();
                 }
 
@@ -291,7 +296,7 @@ namespace Dependencies
                 }
             }
         }
-    
+
         public virtual string Cpu
         {
             get
@@ -339,19 +344,19 @@ namespace Dependencies
             }
         }
 
-		public bool HasErrors
-		{
-			get
-			{
-				return _ErrorImport;
-			}
-			set
-			{
-				_ErrorImport = value;
+        public bool HasErrors
+        {
+            get
+            {
+                return _ErrorImport;
+            }
+            set
+            {
+                _ErrorImport = value;
                 OnPropertyChanged("HasErrors");
 
             }
-		}
+        }
 
 
         public virtual UInt64? Filesize { get { return _Info.Filesize; } }
@@ -359,7 +364,7 @@ namespace Dependencies
         public virtual int? VirtualSize { get { return _Info.SizeOfImage; } }
         public virtual UInt64? EntryPoint { get { return _Info.EntryPoint; } }
         public virtual int? Subsystem { get { return _Info.Subsystem; } }
-        public virtual string SubsystemVersion { get { return String.Format("{0:d}.{1:d}" , _Info.SubsystemVersion.Item1, _Info.SubsystemVersion.Item2); } }
+        public virtual string SubsystemVersion { get { return String.Format("{0:d}.{1:d}", _Info.SubsystemVersion.Item1, _Info.SubsystemVersion.Item2); } }
         public virtual int? Checksum { get { return _Info.Checksum; } }
         public virtual bool? CorrectChecksum { get { return _Info.CorrectChecksum; } }
         public virtual ModuleSearchStrategy Location { get { return _Location; } }
@@ -431,7 +436,7 @@ namespace Dependencies
         {
             string programPath = Dependencies.Properties.Settings.Default.PeViewerPath;
             Process PeviewerProcess = new Process();
-        
+
             if ((Module == null))
             {
                 return false;
@@ -522,7 +527,7 @@ namespace Dependencies
         private ModuleSearchStrategy _Location;
         private List<PeImportDll> _Imports;
         private List<PeExport> _Exports;
-		private bool _ErrorImport;
+        private bool _ErrorImport;
 
 
         private RelayCommand _OpenPeviewerCommand;
@@ -536,9 +541,17 @@ namespace Dependencies
                 return false;
 
             DisplayModuleInfo other = (DisplayModuleInfo)obj;
-            
+
             return string.Equals(_Name, other._Name, StringComparison.OrdinalIgnoreCase) &&
                    string.Equals(_Filepath, other._Filepath, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode()
+        {
+            var nameHash = _Name?.GetHashCode() ?? 17;
+            var filepathHash = _Filepath?.GetHashCode() ?? 137;
+
+            return nameHash ^ filepathHash;
         }
     }
 }

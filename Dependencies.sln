@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35825.156 d17.13
+VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependenciesGui", "DependenciesGui\DependenciesGui.csproj", "{9232B9B6-F2BA-44A3-B8A6-A352777F632C}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -40,6 +40,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "demangler-test", "test\demangler-test\demangler-test.csproj", "{24F9E0C0-CA6E-4565-A9E2-88602DD9F18A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "binarycache-test", "test\binarycache-test\binarycache-test.csproj", "{FF973409-2F2A-46F7-B01D-C6405EA40422}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.NonDefaultItems.props = Directory.NonDefaultItems.props
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
