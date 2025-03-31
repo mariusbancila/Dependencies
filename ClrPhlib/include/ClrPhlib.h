@@ -111,10 +111,10 @@ namespace Dependencies {
             String ^  ForwardedName;
 
 			PeExport();
-            PeExport(const PeExport ^ other);
+            PeExport(_In_ const PeExport ^ other);
             ~PeExport();
 
-			static PeExport^ FromMapimg(const UnmanagedPE& refPe, size_t Index);
+			static PeExport^ FromMapimg(_In_ const UnmanagedPE& refPe, _In_ size_t Index);
 
         };
 
