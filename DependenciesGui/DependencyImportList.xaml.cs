@@ -98,5 +98,20 @@ namespace Dependencies
         {
             CopySelectedRows();
         }
+
+        private void DependencyCustomListView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.S && 
+                ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) &&
+                ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt))
+            {
+                var listView = sender as DependencyCustomListView;
+                if (listView?.SelectedItem is DisplayPeImport viewModel)
+                {
+                    viewModel.QueryImportApi?.Execute(viewModel);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

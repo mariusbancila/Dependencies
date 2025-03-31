@@ -12,8 +12,8 @@
         Style="{StaticResource DependencyImportListViewStyle}"
         SearchListFilter="FilterName"
         CopyHandler="ImportCopyHandler"
+        PreviewKeyDown="DependencyCustomListView_PreviewKeyDown"
     >
-
     <local:DependencyCustomListView.CommandBindings>
         <CommandBinding Command="local:DependencyImportList.CopyValuesCommand" Executed="ImportListCopySelectedValues"></CommandBinding>
     </local:DependencyCustomListView.CommandBindings>
@@ -41,7 +41,7 @@
             <MenuItem Header="Lookup Import function on Microsoft Learn"  
                             Command="{Binding Path=DataContext.QueryImportApi, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid},AncestorLevel=1 }}"
                             CommandParameter ="{Binding DataContext , RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
-                            InputGestureText="Alt+Enter"  
+                            InputGestureText="Ctrl+Alt+S"
                             IsEnabled="True" />
         </ContextMenu>
     </local:DependencyCustomListView.Resources>
