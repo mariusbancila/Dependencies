@@ -163,7 +163,7 @@ public class DisplayPeImport : SettingBindingHandler
                         return;
                     }
 
-                    Process.Start(@"https://docs.microsoft.com/search/?search=" + ExportName);
+                    Process.Start($@"https://learn.microsoft.com/search/?search={ExportName}&category=Documentation");
                 });
             }
 

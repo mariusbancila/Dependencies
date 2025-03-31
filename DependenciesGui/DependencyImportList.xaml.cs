@@ -60,33 +60,43 @@ namespace Dependencies
             return (SelectedItem as DisplayPeImport).ToString();
         }
 
-		private void ImportListCopySelectedValues(object sender, RoutedEventArgs e)
-		{
-			if (this.SelectedItems.Count == 0)
-				return;
+        private void CopySelectedRows()
+        {
+            if (SelectedItems.Count == 0)
+                return;
 
-			List<DisplayPeImport> selectedImports = new List<DisplayPeImport>();
-			foreach (var import in this.SelectedItems)
-			{
-				selectedImports.Add((import as DisplayPeImport));
-			}
+            List<DisplayPeImport> selectedImports = new List<DisplayPeImport>();
+            foreach (var import in this.SelectedItems)
+            {
+                selectedImports.Add((import as DisplayPeImport));
+            }
 
-			string SelectedValues = String.Join("\n", selectedImports.Select( imp => imp.ToString()));
+            string SelectedValues = string.Join("\n", selectedImports.Select(imp => imp.ToString()));
 
-			Clipboard.Clear();
-			// sometimes another process has "opened" the clipboard, so we need to wait for it
-			try
-			{
-				Clipboard.SetText((string)SelectedValues, TextDataFormat.Text);
-				return;
-			}
-			catch { }
-			
-		}
+            Clipboard.Clear();
+            // sometimes another process has "opened" the clipboard, so we need to wait for it
 
-		public void ResetAutoSortProperty()
+            try
+            {
+                Clipboard.SetText(SelectedValues, TextDataFormat.Text);
+                return;
+            }
+            catch { }
+        }
+
+        public void ResetAutoSortProperty()
 		{
 			Wpf.Util.GridViewSort.RemoveSort(this.Items, this);
 		}
-	}
+
+        private void ImportListCopySelectedValues(object sender, RoutedEventArgs e)
+        {
+            CopySelectedRows();
+        }
+
+        private void ImportListCopySelectedValues(object sender, ExecutedRoutedEventArgs e)
+        {
+            CopySelectedRows();
+        }
+    }
 }

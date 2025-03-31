@@ -36,7 +36,7 @@
             <Separator Height="3" Margin="-1,0,0,0"/>
             <MenuItem Header="_Undecorate C++ Functions" Height="26" InputGestureText="F10" IsCheckable="True" IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=Undecorate, Mode=TwoWay }"/>
             <Separator Height="3" Margin="-1,0,0,0"/>
-            <MenuItem Header="Lookup Export function on MSDN"  
+            <MenuItem Header="Lookup Export function on Microsoft Learn"  
                             Command="{Binding Path=DataContext.QueryExportApi, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Grid},AncestorLevel=1 }}"
                             CommandParameter ="{Binding DataContext , RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}}"
                             InputGestureText="Alt+Enter"  
